@@ -1,0 +1,19 @@
+[user]
+	email = robinticist@gmail.com
+	name = robinticist
+
+[init]
+	defaultBranch = main
+
+[core]
+	eol = lf
+	autocrlf = false
+
+[rebase]
+	autosqush = true
+
+[diff]
+	algorithm = histogram
+
+[pull]
+    ff = only
