@@ -1,29 +1,34 @@
-import = [
-  "~/.config/alacritty/themes/themes/catppuccin_frappe.toml"
-]
+#import = [
+#  "~/.config/alacritty/themes/themes/oceanic_next.toml"
+#:]
 
 [bell]
 animation = "EaseOutExpo"
 duration = 0
-
-[window]
-decorations = "Buttonless"
-padding.x = 8
-padding.y = 8
-
-[font]
-normal.family = "BlexMono Nerd Font Mono"
-size = 14
-normal.style = "Italic"
 
 [cursor]
 blink_interval = 500
 blink_timeout = 5
 unfocused_hollow = false
 
-[cursor.style]
-shape = "Block"
+#[cursor.style]
+#shape = "Block"
 
-[terminal]
-osc52 = "CopyPaste"
+[env]
+TERM = "xterm-256color"
+
+[font]
+normal.family = "MesloLGS Nerd Font Mono"
+size = 19
+
+[window]
+#decorations = "Buttonless"
+opacity = 0.8
+blur = true
+padding.x = 8
+padding.y = 8
+
+
+#[terminal]
+#osc52 = "CopyPaste"
 
