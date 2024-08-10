@@ -1,5 +1,5 @@
 import = [
-  "~/.config/alacritty/themes/themes/oceanic_next.toml"
+  "~/dotfiles/.config/alacritty/themes/themes/oceanic_next.toml"
 ]
 
 [bell]

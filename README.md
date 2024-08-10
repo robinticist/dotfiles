@@ -26,10 +26,15 @@ brew install tmux
 brew install fzf  
 brew install oh-my-posh  
 brew install zsh-autosuggestions  
-brew install zsh-syntax-highlighting
+brew install zsh-syntax-highlighting  
+brew install eza  
+brew install zoxide  
 
-* ~/dotfiles >> stow .
-* nvim .
+## Link and Install command
+* ~/dotfiles >> stow . (symlink)
+* nvim . (install nvim settings)
+* tmux >> ctrl + o >> I (install tmux theme)
+  * tmux source-file ~/.tmux.conf (set immediately)
 * powerlevel10k setup command
     
     ```bash 

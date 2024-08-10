@@ -77,12 +77,6 @@ export FZF_DEFAULT_OPTS=" \
 --color=fg:#c6d0f5,header:#e78284,info:#ca9ee6,pointer:#f2d5cf \
 --color=marker:#f2d5cf,fg+:#c6d0f5,prompt:#ca9ee6,hl+:#e78284"
 
-# Aliases
-alias l='eza --color=always --all --long --git --no-filesize --icons=always --no-time --no-user'
-alias lt='eza --tree --level=2 --color=always --all --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
-alias bat='bat -n --color=always --line-range :500'
-alias clean_cache='sudo ./delete_cache.sh'
-
 # Shell integrations
 # fzf
 eval "$(fzf --zsh)"
@@ -111,3 +105,12 @@ source /usr/local/share/powerlevel10k/powerlevel10k.zsh-theme
 
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Aliases
+alias l='eza --color=always --all --long --git --no-filesize --icons=always --no-time --no-user'
+alias lt='eza --tree --level=2 --color=always --all --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
+alias bat='bat -n --color=always --line-range :500'
+alias clean_cache='sudo ./delete_cache.sh'
+alias c="z"
+
+eval "$(zoxide init zsh)"

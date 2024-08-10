@@ -16,4 +16,7 @@
 	algorithm = histogram
 
 [pull]
-    ff = only
+  ff = only
+
+[alias]
+  ss = status
