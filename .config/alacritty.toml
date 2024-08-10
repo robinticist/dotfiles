@@ -1,6 +1,6 @@
-#import = [
-#  "~/.config/alacritty/themes/themes/oceanic_next.toml"
-#:]
+import = [
+  "~/.config/alacritty/themes/themes/oceanic_next.toml"
+]
 
 [bell]
 animation = "EaseOutExpo"
@@ -29,6 +29,6 @@ padding.x = 8
 padding.y = 8
 
 
-#[terminal]
-#osc52 = "CopyPaste"
+[terminal]
+osc52 = "CopyPaste"
 
