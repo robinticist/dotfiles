@@ -30,6 +30,9 @@ brew install zsh-syntax-highlighting
 brew install eza  
 brew install zoxide  
 
+git clone https://github.com/alacritty/alacritty-theme ~/dotfiles/.config/alacritty/themes  
+git clone https://github.com/tmux-plugins/tpm ~/dotfiles/.tmux/plugins/tpm  
+
 ## Link and Install command
 * ~/dotfiles >> stow . (symlink)
 * nvim . (install nvim settings)
