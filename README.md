@@ -45,3 +45,12 @@ git clone https://github.com/tmux-plugins/tpm ~/dotfiles/.tmux/plugins/tpm
     ```
     
 
+## How to use
+
+* tmux (prefix: ctrl + o)  
+
+    | keymap | actions |
+    | ------ | ------ |
+    | prefix + c | Create New Pane |
+    | prefix + h | Split Pane Horizontally |
+    | prefix + v | Split screen Vertically |
