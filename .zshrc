@@ -11,7 +11,7 @@ fpath+=${ZDOTDIR:-~}/.zsh_functions
 
 # Oh My Posh
 # https://ohmyposh.dev/docs/installation/prompt
-eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin_frappe.omp.json')"
+# eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin_frappe.omp.json')"
 
 # Zinit
 # https://github.com/zdharma-continuum/zinit
@@ -79,12 +79,12 @@ export FZF_DEFAULT_OPTS=" \
 
 # Shell integrations
 # fzf
-eval "$(fzf --zsh)"
+# eval "$(fzf --zsh)"
 
 # fnm
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
-  export PATH="/home/funes/.local/share/fnm:$PATH"
+  export PATH="$HOME/.local/share/fnm:$PATH"
   eval "`fnm env`"
 fi
 
@@ -98,19 +98,22 @@ esac
 # pnpm end
 
 # powerlevel10k
-source /usr/local/share/powerlevel10k/powerlevel10k.zsh-theme
+source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Aliases
-alias l='eza --color=always --all --long --git --no-filesize --icons=always --no-time --no-user'
-alias lt='eza --tree --level=2 --color=always --all --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
-alias bat='bat -n --color=always --line-range :500'
+# alias l='eza --color=always --all --long --git --no-filesize --icons=always --no-time --no-user'
+# alias lt='eza --tree --level=2 --color=always --all --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
+# alias bat='bat -n --color=always --line-range :500'
 alias clean_cache='sudo ./delete_cache.sh'
 alias c="z"
 
-eval "$(zoxide init zsh)"
+# eval "$(zoxide init zsh)"
+
+# To customize prompt, run `p10k configure` or edit ~/dotfiles/.p10k.zsh.
+[[ ! -f ~/dotfiles/.p10k.zsh ]] || source ~/dotfiles/.p10k.zsh
