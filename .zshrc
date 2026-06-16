@@ -1,3 +1,7 @@
+# Language Environment
+export LANG=ko_KR.UTF-8
+export LC_ALL=ko_KR.UTF-8
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -90,7 +94,7 @@ fi
 
 
 # pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
+export PNPM_HOME="/Users/robinticist/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -103,10 +107,6 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-
 # Aliases
 alias l='eza --color=always --all --long --git --no-filesize --icons=always --no-time --no-user'
 alias lt='eza --tree --level=2 --color=always --all --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
@@ -118,3 +118,84 @@ eval "$(zoxide init zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/dotfiles/.p10k.zsh.
 [[ ! -f ~/dotfiles/.p10k.zsh ]] || source ~/dotfiles/.p10k.zsh
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+# openjdk
+export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"
+
+# 현재 경로의 프로젝트에서만 적용되도록 변경
+aws-login() {
+  # 1. 환경 변수 및 상수 설정
+  local profile="${1:-DEV-FEDeveloperAccess-047719655696}"
+  local domain="codeartifact"
+  local owner="047719655696"
+  local region="ap-northeast-1"
+  local repo_url="codeartifact-${owner}.d.${domain}.${region}.amazonaws.com/npm/npm-store/"
+
+  # 2. 프로젝트 루트 체크
+  if [[ ! -f "package.json" ]]; then
+    echo "❌ package.json이 없습니다. 프로젝트 루트에서 실행해 주세요."
+    return 1
+  fi
+
+  # 3. AWS SSO 로그인
+  echo "🔐 AWS SSO 로그인 중 ($profile)..."
+  if ! aws sso login --profile "$profile"; then
+    echo "❌ SSO 로그인 실패"
+    return 1
+  fi
+
+  # 4. CodeArtifact 토큰 갱신
+  echo "🔑 토큰 갱신 중..."
+  local token
+  token=$(aws codeartifact get-authorization-token --domain "$domain" --domain-owner "$owner" --region "$region" --profile "$profile" --query authorizationToken --output text) || return 1
+
+  # 5. .gitignore 보안 처리 함수
+  _update_gitignore() {
+    local file=$1
+    [ ! -f ".gitignore" ] && touch ".gitignore"
+    if ! grep -q "^${file}$" .gitignore; then
+      echo -e "\n# AWS CodeArtifact\n$file" >> .gitignore
+      echo "🛡️  $file -> .gitignore 추가 완료"
+    fi
+  }
+
+  # 6. 설정 파일 생성 (.npmrc 공통)
+  echo "registry=https://registry.npmjs.org/" > .npmrc
+  echo "@aj-fe:registry=https://${repo_url}" >> .npmrc
+  echo "//${repo_url}:_authToken=${token}" >> .npmrc
+  _update_gitignore ".npmrc"
+
+  # 7. 패키지 매니저별 맞춤 설정
+  if [[ -f "yarn.lock" ]]; then
+    echo "📦 Yarn 감지: .yarnrc 설정 중..."
+    echo "\"@aj-fe:registry\" \"https://${repo_url}\"" > .yarnrc
+    _update_gitignore ".yarnrc"
+  elif [[ -f "pnpm-lock.yaml" ]]; then
+    echo "📦 pnpm 감지: .npmrc 설정을 공유합니다."
+  elif [[ -f "package-lock.json" ]]; then
+    echo "📦 npm 감지 완료."
+  fi
+
+  echo "✅ 모든 설정이 완료되었습니다!"
+}
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# pnpm end
+
+export PATH="$HOME/.local/bin:$PATH"
+
+# Added by Antigravity IDE
+export PATH="/Users/robinticist/.antigravity-ide/antigravity-ide/bin:$PATH"
