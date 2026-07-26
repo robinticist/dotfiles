@@ -20,3 +20,5 @@
 
 [alias]
   ss = status
+[credential]
+	helper = osxkeychain
