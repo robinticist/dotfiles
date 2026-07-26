@@ -13,9 +13,8 @@ fi
 # https://github.com/alacritty/alacritty/blob/master/INSTALL.md#zsh
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
-# Oh My Posh
-# https://ohmyposh.dev/docs/installation/prompt
-eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin_frappe.omp.json')"
+# Oh My Posh (p10k 테마와 중복 실행을 방지하기 위해 주석 처리, 필요 시 주석 해제)
+# eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin_frappe.omp.json')"
 
 # Zinit
 # https://github.com/zdharma-continuum/zinit
@@ -24,16 +23,8 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
-# Zsh plugins
-zinit light zsh-users/zsh-syntax-highlighting
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
 # fzf plugin
 zinit light Aloxaf/fzf-tab
-
-# Load completions
-autoload -Uz compinit
-compinit
 
 # Keybindings
 # https://quickref.me/emacs.html
@@ -53,7 +44,6 @@ setopt hist_save_no_dups
 setopt hist_find_no_dups
 
 # Completion styling
-#
 # ignore Capitalized character
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 # disable sort when completing `git checkout`
@@ -70,10 +60,6 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --tree --level=2 --color=always
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
-# fd
-# https://github.com/sharkdp/fd
-#export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
-#export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # fzf-catppuccin
 # https://github.com/catppuccin/fzf
 export FZF_DEFAULT_OPTS=" \
@@ -92,16 +78,7 @@ if [ -d "$FNM_PATH" ]; then
   eval "`fnm env`"
 fi
 
-
-# pnpm
-export PNPM_HOME="/Users/robinticist/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# powerlevel10k
+# powerlevel10k 테마 로드
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -190,12 +167,54 @@ aws-login() {
   echo "✅ 모든 설정이 완료되었습니다!"
 }
 
+# ----------------------------------------------------
+#  플러그인 & 완성 기능 로드 (한글 간섭 최적화 및 compinit 정렬)
+# ----------------------------------------------------
+
+# 1. 컴플리션 확장 플러그인 로드
+zinit light zsh-users/zsh-completions
+
+# 2. Zsh 기본 완성 시스템 초기화 (zsh-completions 인식용)
+autoload -Uz compinit
+compinit
+
+# 3. 사용자 입력 반응 플러그인 (한글 씹힘 최소화를 위해 최하단 배치)
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-autosuggestions
+
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
 # pnpm end
 
 export PATH="$HOME/.local/bin:$PATH"
 
 # Added by Antigravity IDE
 export PATH="/Users/robinticist/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# 디렉토리 변경 시 tmux 탭 이름을 현재 폴더명으로 변경
+function rename_tmux_window() {
+    if [ -n "$TMUX" ]; then
+        # 현재 경로의 마지막 폴더 이름만 추출
+        local current_dir="${PWD##*/}"
+        
+        # 홈 디렉토리면 ~ 로 표시
+        if [ "$PWD" = "$HOME" ]; then
+            current_dir="~"
+        fi
+        
+        # tmux 윈도우 이름 바꾸기 명령어 실행
+        tmux rename-window "$current_dir"
+    fi
+}
+
+# zsh 디렉토리 변경(chpwd) 훅에 함수 등록
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd rename_tmux_window
+
+# 처음 tmux 창을 열었을 때 초기 디렉토리 이름을 반영하기 위해 한 번 실행
+rename_tmux_window
+
