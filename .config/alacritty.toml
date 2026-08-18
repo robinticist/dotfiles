@@ -34,3 +34,39 @@ import = [
   "~/dotfiles/.config/alacritty/themes/themes/oceanic_next.toml"
 ]
 
+
+# Option + Command + <-/-> : tmux 윈도우(탭) 이동용 커스텀 시퀀스 전송
+[[keyboard.bindings]]
+key = "Left"
+mods = "Command|Alt"
+chars = "\u001B[1;11D"
+
+[[keyboard.bindings]]
+key = "Right"
+mods = "Command|Alt"
+chars = "\u001B[1;11C"
+
+# Option + 방향키 : tmux pane 이동
+# macOS 는 option_as_alt 기본값이 None 이라 Option 이 Alt 수정자를 만들지 않는다.
+# 표준 Alt 시퀀스(1;3x)는 쓰지 않는다. tmux 가 meta 비트를 M-* 로 해석해서 Cmd+방향키까지
+# 같이 걸리기 때문이다. 수정자 20 은 실제 터미널이 안 쓰는 사설값이고, tmux 쪽에서 user-keys 로 받는다.
+# 명시적 바인딩이라 option_as_alt 를 켜지 않아도 되고, Option 문자 조합(å, ç)도 그대로 유지된다.
+[[keyboard.bindings]]
+key = "Left"
+mods = "Alt"
+chars = "\u001B[1;20D"
+
+[[keyboard.bindings]]
+key = "Right"
+mods = "Alt"
+chars = "\u001B[1;20C"
+
+[[keyboard.bindings]]
+key = "Up"
+mods = "Alt"
+chars = "\u001B[1;20A"
+
+[[keyboard.bindings]]
+key = "Down"
+mods = "Alt"
+chars = "\u001B[1;20B"

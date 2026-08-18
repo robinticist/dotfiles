@@ -1,3 +1,11 @@
+# Cloned by install.sh, not tracked here
+.config/alacritty/themes/
+.tmux/plugins/tpm/
+.tmux/plugins/tmux/
+
+# nvim plugin lockfile
 .config/nvim/lazy-lock.json
-.config/alacritty/alacritty-theme/themes
-.tmux/plugins/tpm
+
+# Devin
+devin
+.config/devin/

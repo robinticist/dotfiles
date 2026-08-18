@@ -2,6 +2,20 @@
 export LANG=ko_KR.UTF-8
 export LC_ALL=ko_KR.UTF-8
 
+# Homebrew: locate it wherever it lives on this machine and export HOMEBREW_PREFIX.
+# Apple Silicon uses /opt/homebrew, Intel /usr/local, Linuxbrew its own path. Doing this
+# here means the rest of this file never hardcodes a prefix, and ~/.zprofile is not
+# required for brew to be on PATH. Produces no output, so it is safe above p10k below.
+if [[ -z "${HOMEBREW_PREFIX:-}" ]]; then
+  for __brew in /opt/homebrew /usr/local /home/linuxbrew/.linuxbrew; do
+    if [[ -x "$__brew/bin/brew" ]]; then
+      eval "$("$__brew/bin/brew" shellenv)"
+      break
+    fi
+  done
+  unset __brew
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -79,7 +93,12 @@ if [ -d "$FNM_PATH" ]; then
 fi
 
 # powerlevel10k 테마 로드
-source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+# brew 설치본을 우선 쓰고, 없으면 git clone 위치로 넘어간다.
+if [[ -r "$HOMEBREW_PREFIX/share/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+  source "$HOMEBREW_PREFIX/share/powerlevel10k/powerlevel10k.zsh-theme"
+elif [[ -r "$HOME/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+  source "$HOME/powerlevel10k/powerlevel10k.zsh-theme"
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -98,17 +117,23 @@ eval "$(zoxide init zsh)"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
 
-# openjdk
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/tools
-export PATH=$PATH:$ANDROID_HOME/tools/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"
+# openjdk — only added when actually installed on this machine, newest last so it wins.
+# NOTE: @21 is prepended after @17, so `java` always resolves to 21. If a project needs 17,
+# switch with JAVA_HOME rather than reordering these lines.
+for __jdk in 17 21; do
+  [[ -d "$HOMEBREW_PREFIX/opt/openjdk@$__jdk/bin" ]] &&
+    export PATH="$HOMEBREW_PREFIX/opt/openjdk@$__jdk/bin:$PATH"
+done
+unset __jdk
+
+# Android SDK — skipped entirely on machines without it
+if [[ -d "$HOME/Library/Android/sdk" ]]; then
+  export ANDROID_HOME="$HOME/Library/Android/sdk"
+  export PATH="$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
+fi
 
 # 현재 경로의 프로젝트에서만 적용되도록 변경
 aws-login() {
@@ -192,8 +217,9 @@ esac
 
 export PATH="$HOME/.local/bin:$PATH"
 
-# Added by Antigravity IDE
-export PATH="/Users/robinticist/.antigravity-ide/antigravity-ide/bin:$PATH"
+# Added by Antigravity IDE ($HOME instead of a hardcoded username, and only if present)
+[[ -d "$HOME/.antigravity-ide/antigravity-ide/bin" ]] &&
+  export PATH="$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"
 
 # 디렉토리 변경 시 tmux 탭 이름을 현재 폴더명으로 변경
 function rename_tmux_window() {
